@@ -1,84 +1,147 @@
 import sqlite3
 
-database_file = 'cache_test.db'
+
+class UserRepository:
+    database_file = 'cache_test.db'
+
+    def get_user_by_id_db(self, user_id: int):
+        user = {}
+        conn = sqlite3.connect(self.database_file)
+        cursor = conn.cursor()
+
+        # Query and retrieve data from the table
+        cursor.execute(f'SELECT * FROM user where id ={user_id}')
+        result = cursor.fetchall()
+
+        # Display the retrieved data
+        for row in result:
+            user = {'ID': row[0], 'Name': row[1], 'Age': row[2]}
+
+        cursor.close()
+        conn.close()
+
+        return user
+
+    def update_user_by_id_db(self, user_id: int, user: dict):
+        conn = sqlite3.connect(self.database_file)
+        cursor = conn.cursor()
+
+        update_query = '''
+            UPDATE user
+            SET age = ?
+            WHERE id = ?
+        '''
+        cursor.execute(update_query, (user['Age'], user_id))
+        # Query and retrieve data from the table
+        cursor.execute(f'SELECT * FROM user where id ={user_id}')
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return user
+
+    def add_user(self, user: dict):
+        conn = sqlite3.connect(self.database_file)
+        cursor = conn.cursor()
+
+        data_to_insert = [
+            (user['Name'], user['Age'])
+        ]
+        cursor.executemany('INSERT INTO user (name, age) VALUES (?, ?)', data_to_insert)
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return user
+
+    def remove_all_user(self):
+        conn = sqlite3.connect(self.database_file)
+        cursor = conn.cursor()
+
+        cursor.execute('DELETE FROM user')
+
+        # Commit the transaction to make the changes permanent
+        conn.commit()
+
+        # Close the cursor and the database connection
+        cursor.close()
+        conn.close()
+
+    def count_all_user(self):
+        conn = sqlite3.connect(self.database_file)
+        cursor = conn.cursor()
+
+        cursor.execute('SELECT COUNT(*) FROM user')
+
+        # Fetch the result of the query
+        count = cursor.fetchone()[0]
+
+        return count
+
+    def close(self):
+        pass
 
 
-def get_user_by_id_db(user_id: int):
-    user = {}
+class UserRepositoryOneConnection:
+    database_file = 'cache_test.db'
     conn = sqlite3.connect(database_file)
     cursor = conn.cursor()
 
-    # Query and retrieve data from the table
-    cursor.execute(f'SELECT * FROM user where id ={user_id}')
-    result = cursor.fetchall()
+    def get_user_by_id_db(self, user_id: int):
+        user = {}
 
-    # Display the retrieved data
-    for row in result:
-        user = {'ID': row[0], 'Name': row[1], 'Age': row[2]}
+        # Query and retrieve data from the table
+        self.cursor.execute(f'SELECT * FROM user where id ={user_id}')
+        result = self.cursor.fetchall()
 
-    cursor.close()
-    conn.close()
+        # Display the retrieved data
+        for row in result:
+            user = {'ID': row[0], 'Name': row[1], 'Age': row[2]}
 
-    return user
+        return user
 
+    def update_user_by_id_db(self, user_id: int, user: dict):
+        update_query = '''
+            UPDATE user
+            SET age = ?
+            WHERE id = ?
+        '''
+        self.cursor.execute(update_query, (user['Age'], user_id))
+        # Query and retrieve data from the table
+        self.cursor.execute(f'SELECT * FROM user where id ={user_id}')
 
-def update_user_by_id_db(user_id: int, user: dict):
-    conn = sqlite3.connect(database_file)
-    cursor = conn.cursor()
+        self.conn.commit()
 
-    update_query = '''
-        UPDATE user
-        SET age = ?
-        WHERE id = ?
-    '''
-    cursor.execute(update_query, (user['Age'], user_id))
-    # Query and retrieve data from the table
-    cursor.execute(f'SELECT * FROM user where id ={user_id}')
+        return user
 
-    conn.commit()
-    cursor.close()
-    conn.close()
+    def add_user(self, user: dict):
+        data_to_insert = [
+            (user['Name'], user['Age'])
+        ]
+        self.cursor.executemany('INSERT INTO user (name, age) VALUES (?, ?)', data_to_insert)
 
-    return user
+        self.conn.commit()
 
+        return user
 
-def add_user(user: dict):
-    conn = sqlite3.connect(database_file)
-    cursor = conn.cursor()
+    def remove_all_user(self):
+        self.cursor.execute('DELETE FROM user')
 
-    data_to_insert = [
-        (user['Name'], user['Age'])
-    ]
-    cursor.executemany('INSERT INTO user (name, age) VALUES (?, ?)', data_to_insert)
+        # Commit the transaction to make the changes permanent
+        self.conn.commit()
 
-    conn.commit()
-    cursor.close()
-    conn.close()
+        # Close the cursor and the database connection
 
-    return user
+    def count_all_user(self):
+        self.cursor.execute('SELECT COUNT(*) FROM user')
 
+        # Fetch the result of the query
+        count = self.cursor.fetchone()[0]
 
-def remove_all_user():
-    conn = sqlite3.connect(database_file)
-    cursor = conn.cursor()
+        return count
 
-    cursor.execute('DELETE FROM user')
-
-    # Commit the transaction to make the changes permanent
-    conn.commit()
-
-    # Close the cursor and the database connection
-    cursor.close()
-    conn.close()
-
-
-def count_all_user():
-    conn = sqlite3.connect(database_file)
-    cursor = conn.cursor()
-
-    cursor.execute('SELECT COUNT(*) FROM user')
-
-    # Fetch the result of the query
-    count = cursor.fetchone()[0]
-
-    return count
+    def close(self):
+        self.cursor.close()
+        self.conn.close()
