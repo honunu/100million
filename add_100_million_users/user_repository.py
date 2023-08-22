@@ -56,7 +56,7 @@ class UserRepository:
 
         return user
 
-    def add_user_batch(self, user:list):
+    def add_user_batch(self, user: list):
         pass
 
     def remove_all_user(self):
@@ -130,7 +130,6 @@ class UserRepositoryOneConnection:
         return user
 
     def add_user_batch(self, user_list: list):
-
         self.cursor.executemany('INSERT INTO user (name, age) VALUES (?, ?)', user_list)
 
         self.conn.commit()
@@ -150,6 +149,36 @@ class UserRepositoryOneConnection:
         # Fetch the result of the query
         count = self.cursor.fetchone()[0]
 
+        return count
+
+    def close(self):
+        self.cursor.close()
+        self.conn.close()
+
+
+class UserRepositoryInMemory:
+    conn = sqlite3.connect(':memory:')
+    cursor = conn.cursor()
+
+    def __init__(self):
+        self.cursor.execute('''CREATE TABLE IF NOT EXISTS user
+                          (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                           name TEXT,
+                           age INTEGER)''')
+        self.conn.commit()
+
+    def add_user_batch(self, user_list: list):
+        self.cursor.executemany('INSERT INTO user (name, age) VALUES (?, ?)', user_list)
+        self.conn.commit()
+
+    def remove_all_user(self):
+        self.cursor.execute('DELETE FROM user')
+        self.conn.commit()
+
+    def count_all_user(self):
+        self.cursor.execute('SELECT COUNT(*) FROM user')
+        # Fetch the result of the query
+        count = self.cursor.fetchone()[0]
         return count
 
     def close(self):

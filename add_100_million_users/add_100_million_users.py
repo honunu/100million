@@ -1,9 +1,10 @@
-from user_repository import UserRepository, UserRepositoryOneConnection
+from user_repository import UserRepository, UserRepositoryOneConnection, UserRepositoryInMemory
 import time
 
-user_amount_list = [1,  10_000, 10_000_000]
+user_amount_list = [1, 10_000, 10_000_000]
 user_repo = UserRepository()
 user_repo_one_connection = UserRepositoryOneConnection()
+user_repo_in_memory = UserRepositoryInMemory()
 
 
 def add_user_and_clean(user_amount_list, user_repo):
@@ -44,5 +45,8 @@ def add_user_batch_and_clean(user_amount_list, user_repo):
 # add_user_and_clean(user_amount_list=user_amount_list,
 #                    user_repo=user_repo_one_connection)
 
+# add_user_batch_and_clean(user_amount_list=user_amount_list,
+#                          user_repo=user_repo_one_connection)
+
 add_user_batch_and_clean(user_amount_list=user_amount_list,
-                         user_repo=user_repo_one_connection)
+                         user_repo=user_repo_in_memory)
