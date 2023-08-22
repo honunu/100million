@@ -56,6 +56,9 @@ class UserRepository:
 
         return user
 
+    def add_user_batch(self, user:list):
+        pass
+
     def remove_all_user(self):
         conn = sqlite3.connect(self.database_file)
         cursor = conn.cursor()
@@ -125,6 +128,13 @@ class UserRepositoryOneConnection:
         self.conn.commit()
 
         return user
+
+    def add_user_batch(self, user_list: list):
+
+        self.cursor.executemany('INSERT INTO user (name, age) VALUES (?, ?)', user_list)
+
+        self.conn.commit()
+        pass
 
     def remove_all_user(self):
         self.cursor.execute('DELETE FROM user')
