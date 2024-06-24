@@ -18,7 +18,7 @@ def timing_log(func):
 
         start_time = time.perf_counter()
 
-        result = func()
+        result = func(*args, **kwargs)
         end_time = time.perf_counter()
         print(f"time taken running {func.__name__} took {end_time-start_time} seconds")
 

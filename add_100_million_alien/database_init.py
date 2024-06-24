@@ -7,7 +7,7 @@ conn = sqlite3.connect('cache_test.db')
 cursor = conn.cursor()
 
 # Create a table to store data (if it doesn't exist)
-cursor.execute('''CREATE TABLE IF NOT EXISTS user
+cursor.execute('''CREATE TABLE IF NOT EXISTS alien
                   (id INTEGER PRIMARY KEY AUTOINCREMENT,
                    name TEXT,
                    age INTEGER)''')
