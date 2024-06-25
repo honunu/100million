@@ -4,23 +4,6 @@ import time
 
 from utils import timing_log
 
-alien_repo = AlienRepo()
-alien_repo_in_memory = AlienRepoInMemory()
-
-
-def add_user_and_clean(user_repo):
-    aliens = generate_aliens()
-    for alien in aliens:
-        print(f"新增 {aliens.count()} 个外星人用户")
-
-        user_repo.add_alien(alien)
-
-        print(f'当前 {user_repo.count_all_alien()} 个用户')
-
-        user_repo.remove_all_alien()
-
-    user_repo.close()
-
 
 @timing_log
 def add_alien_batch_and_clean(alien_list, alien_repo):
@@ -36,13 +19,9 @@ def add_alien_batch_and_clean(alien_list, alien_repo):
     alien_repo.close()
 
 
-# add_user_and_clean(user_amount_list, user_repo)
-# add_user_and_clean(user_amount_list=user_amount_list,
-#                    user_repo=user_repo_one_connection)
-
 aliens = generate_aliens()
 add_alien_batch_and_clean(alien_list=aliens,
-                          alien_repo=alien_repo)
+                          alien_repo=AlienRepo())
 
 add_alien_batch_and_clean(alien_list=aliens,
-                          alien_repo=alien_repo_in_memory)
+                          alien_repo=AlienRepoInMemory())
