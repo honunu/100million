@@ -1,0 +1,13 @@
+[project]
+name = "100million"
+version = "1.0.0"
+description = "The 100 million project"
+authors = [{name = "Victor", email = "victorwu34@gmail.com"}]
+dependencies = [
+    "seaborn==0.12.2",
+    "tornado~=6.3.3"
+]
+
+[build-system]
+requires = ["uv"]
+build-backend = "uv"

@@ -40,5 +40,4 @@ async def event_loop_download():
     print(f"{size/1024/1024} MBytes downloaded")
 
 
-# asyncio.run(event_loop_run())
 asyncio.run(event_loop_download())
